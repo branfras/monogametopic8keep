@@ -27,6 +27,7 @@ namespace monogametopic8keep
         List<Rectangle> eggs;
         int manSpeed;
         Screen screen;
+        SpriteFont Text;
 
         enum Screen
         {
@@ -106,6 +107,8 @@ namespace monogametopic8keep
             eggs.Add(new Rectangle(1125, 75, 75, 75));
 
             exitRect = new Rectangle(1275, 675, 75, 75);
+
+            Text = Content.Load<SpriteFont>("Text");
         }
 
         protected override void LoadContent()
@@ -136,60 +139,71 @@ namespace monogametopic8keep
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
-            if (keyboardState.IsKeyDown(Keys.Left))
+            if (screen == Screen.start)
             {
-                manRect.X -= manSpeed;
-                currentManTexture = manLeftTexture;
-                foreach (Rectangle barrier in barriers)
-                    if (manRect.Intersects(barrier))
-                    {
-                        manRect.X = barrier.Right;
-                    }
-            }
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                manRect.X += manSpeed;
-                currentManTexture = manRightTexture;
-                foreach (Rectangle barrier in barriers)
-                    if (manRect.Intersects(barrier))
-                    {
-                        manRect.X = barrier.Left - manRect.Width;
-                    }
-            }
-            if (keyboardState.IsKeyDown(Keys.Up))
-            {
-                manRect.Y -= manSpeed;
-                currentManTexture = manUpTexture;
-                foreach (Rectangle barrier in barriers)
-                    if (manRect.Intersects(barrier))
-                    {
-                        manRect.Y = barrier.Bottom;
-                    }
-            }
-            if (keyboardState.IsKeyDown(Keys.Down))
-            {
-                manRect.Y += manSpeed;
-                currentManTexture = manDownTexture;
-                foreach (Rectangle barrier in barriers)
-                    if (manRect.Intersects(barrier))
-                    {
-                        manRect.Y = barrier.Top - manRect.Height;
-                    }
-            }
-
-            for (int i = 0; i < eggs.Count; i++)
-            {
-                if (manRect.Intersects(eggs[i]))
+                if (mouseState.LeftButton == ButtonState.Pressed)
                 {
-                    eggs.RemoveAt(i);
-                    i--;
+                    screen = Screen.game;
                 }
+
             }
 
-            if (exitRect.Contains(manRect) && eggs.Count == 0)
-                Exit();
+            else if (screen == Screen.game)
+            {
+                // TODO: Add your update logic here
+                if (keyboardState.IsKeyDown(Keys.Left))
+                {
+                    manRect.X -= manSpeed;
+                    currentManTexture = manLeftTexture;
+                    foreach (Rectangle barrier in barriers)
+                        if (manRect.Intersects(barrier))
+                        {
+                            manRect.X = barrier.Right;
+                        }
+                }
+                if (keyboardState.IsKeyDown(Keys.Right))
+                {
+                    manRect.X += manSpeed;
+                    currentManTexture = manRightTexture;
+                    foreach (Rectangle barrier in barriers)
+                        if (manRect.Intersects(barrier))
+                        {
+                            manRect.X = barrier.Left - manRect.Width;
+                        }
+                }
+                if (keyboardState.IsKeyDown(Keys.Up))
+                {
+                    manRect.Y -= manSpeed;
+                    currentManTexture = manUpTexture;
+                    foreach (Rectangle barrier in barriers)
+                        if (manRect.Intersects(barrier))
+                        {
+                            manRect.Y = barrier.Bottom;
+                        }
+                }
+                if (keyboardState.IsKeyDown(Keys.Down))
+                {
+                    manRect.Y += manSpeed;
+                    currentManTexture = manDownTexture;
+                    foreach (Rectangle barrier in barriers)
+                        if (manRect.Intersects(barrier))
+                        {
+                            manRect.Y = barrier.Top - manRect.Height;
+                        }
+                }
 
+                for (int i = 0; i < eggs.Count; i++)
+                {
+                    if (manRect.Intersects(eggs[i]))
+                    {
+                        eggs.RemoveAt(i);
+                        i--;
+                    }
+                }
+
+                if (exitRect.Contains(manRect) && eggs.Count == 0)
+                    Exit();
+            }
             base.Update(gameTime);
         }
 
@@ -200,14 +214,21 @@ namespace monogametopic8keep
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
-            foreach (Rectangle barrier in barriers)
-                _spriteBatch.Draw(barrierTexture, barrier, Color.White);
+            if (screen == Screen.start)
+            {
+                _spriteBatch.DrawString(Text, "Left click to start the game", new Vector2(340,250), Color.Black);
+            }
 
-            _spriteBatch.Draw(exitTexture, exitRect, Color.White);
-            _spriteBatch.Draw(currentManTexture, manRect, Color.White);
-            foreach (Rectangle coin in eggs)
-                _spriteBatch.Draw(eggTexture, coin, Color.White);
+            else if (screen == Screen.game)
+            {
+                foreach (Rectangle barrier in barriers)
+                    _spriteBatch.Draw(barrierTexture, barrier, Color.White);
 
+                _spriteBatch.Draw(exitTexture, exitRect, Color.White);
+                _spriteBatch.Draw(currentManTexture, manRect, Color.White);
+                foreach (Rectangle coin in eggs)
+                    _spriteBatch.Draw(eggTexture, coin, Color.White);
+            }
             _spriteBatch.End();
 
             base.Draw(gameTime);

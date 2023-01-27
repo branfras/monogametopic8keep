@@ -109,3 +109,10 @@
 /processorParam:TextureFormat=Color
 /build:stone_barrier.png
 
+#begin Text.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Text.spritefont
+
