@@ -96,6 +96,7 @@ namespace monogametopic8keep
             barriers.Add(new Rectangle(900, 75, 75, 75));
             barriers.Add(new Rectangle(750, 75, 75, 150));
             barriers.Add(new Rectangle(525, 150, 150, 75));
+            barriers.Add(new Rectangle(1275, 750, 75, 75)); // DO NOT REMOVE
 
 
             eggs = new List<Rectangle>();
